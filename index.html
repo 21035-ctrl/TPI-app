@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0A0A0B">
 <title>TPI — ยืดอายุคอมพิวเตอร์ Windows ของคุณ</title>
-<meta name="description" content="TPI ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD วัดผลก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง ฟรี ไม่ต้องลง .NET">
+<meta name="description" content="TPI ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD ทดสอบประสิทธิภาพก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง ฟรี ไม่ต้องลง .NET">
 <meta property="og:title" content="TPI — Tweak Program Interface">
-<meta property="og:description" content="ยืดอายุคอมพิวเตอร์ Windows — ลดความร้อน ลดการเขียน SSD วัดผลได้จริง ย้อนกลับได้">
+<meta property="og:description" content="ยืดอายุคอมพิวเตอร์ Windows — ลดความร้อน ลดการเขียน SSD ทดสอบประสิทธิภาพได้จริง ย้อนกลับได้">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/logo.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -34,10 +34,13 @@ img{max-width:100%;display:block}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
 ::selection{background:var(--brand);color:var(--ink)}
 
-/* reveal on scroll */
-.rv{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+/* reveal on scroll — pronounced, Nike-style */
+.rv{opacity:0;transform:translateY(60px);transition:opacity .9s var(--ease),transform .9s var(--ease);will-change:transform,opacity}
 .rv.in{opacity:1;transform:none}
-.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+.rv-l{transform:translateX(-60px)}
+.rv-r{transform:translateX(60px)}
+.rv-s{transform:translateY(40px) scale(.9)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
 
 /* nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .35s,border-color .35s,backdrop-filter .35s;border-bottom:1px solid transparent}
@@ -227,8 +230,17 @@ details p{padding:0 4px 24px;color:var(--muted);font-size:14.5px;max-width:680px
 details p b{color:var(--text);font-weight:600}
 
 /* cta */
-.cta{background:var(--brand);color:var(--ink);padding:112px 0}
-.cta-in{text-align:center}
+.cta{background:var(--brand);color:var(--ink);padding:120px 0;position:relative;overflow:hidden}
+.cta-grid{position:absolute;inset:0;pointer-events:none;opacity:.6;
+  background-image:linear-gradient(rgba(0,0,0,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.055) 1px,transparent 1px);
+  background-size:66px 66px;
+  -webkit-mask-image:radial-gradient(72% 78% at 50% 50%,#000,transparent);mask-image:radial-gradient(72% 78% at 50% 50%,#000,transparent)}
+.cta-glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 70% at 50% 130%,rgba(0,0,0,.16),transparent 68%),radial-gradient(50% 50% at 50% -20%,rgba(255,255,255,.4),transparent 70%)}
+.cta-mark{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;pointer-events:none;
+  font-family:var(--disp);font-weight:900;font-size:clamp(88px,17vw,240px);letter-spacing:1px;white-space:nowrap;
+  color:transparent;-webkit-text-stroke:2px rgba(17,17,17,.09);line-height:1}
+.cta-in{position:relative;text-align:center}
 .cta h2{color:var(--ink);font-size:clamp(34px,5vw,60px)}
 .cta p{margin:16px auto 34px;font-weight:500;color:rgba(17,17,17,.72);max-width:480px;font-size:16px}
 .btn-ink{background:var(--ink);color:var(--brand);box-shadow:0 18px 44px -14px rgba(0,0,0,.45)}
@@ -276,7 +288,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
     <a class="brand-mark" href="#top" aria-label="TPI — หน้าแรก"><img src="assets/logo.png" alt="TPI"></a>
     <div class="nav-links">
       <a href="#features">ฟีเจอร์</a>
-      <a href="#measure">วัดผล</a>
+      <a href="#measure">ทดสอบ</a>
       <a href="#install">ติดตั้ง</a>
       <a href="#faq">คำถามที่พบบ่อย</a>
     </div>
@@ -298,7 +310,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
         <span class="l"><span class="out">อยู่ต่อ</span></span>
         <span class="l"><span class="yel">อีกหลายปี</span></span>
       </h1>
-      <p class="hero-sub">ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD วัดผลก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง</p>
+      <p class="hero-sub">ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD ทดสอบประสิทธิภาพก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง</p>
       <div class="hero-cta">
         <a class="btn btn-y btn-xl" href="#" data-dl>ดาวน์โหลด <span class="arr">→</span></a>
         <a class="btn btn-ghost" href="#features">ดูฟีเจอร์</a>
@@ -321,7 +333,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
               <div class="it"><span class="ic"></span>สุขภาพเครื่อง</div>
               <div class="it"><span class="ic"></span>เซ็นเซอร์</div>
               <div class="it"><span class="ic"></span>พรีเซ็ต</div>
-              <div class="it"><span class="ic"></span>วัดผล</div>
+              <div class="it"><span class="ic"></span>ทดสอบ</div>
               <div class="it"><span class="ic"></span>ปรับแต่ง</div>
               <div class="it"><span class="ic"></span>ประวัติ</div>
             </div>
@@ -362,7 +374,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
 <section class="stats">
   <div class="wrap stats-g">
     <div class="stat rv"><div class="n"><em data-count="55">0</em></div><div class="t">รายการปรับแต่ง แยกหมวด อธิบายเป็นภาษาไทย</div></div>
-    <div class="stat rv d1"><div class="n"><em data-count="11">0</em></div><div class="t">หน้าใช้งาน ตั้งแต่มอนิเตอร์ถึงวัดผล</div></div>
+    <div class="stat rv d1"><div class="n"><em data-count="11">0</em></div><div class="t">หน้าใช้งาน ตั้งแต่มอนิเตอร์ถึงทดสอบ</div></div>
     <div class="stat rv d2"><div class="n"><em data-count="100">0</em>%</div><div class="t">ปรับแต่งแล้วย้อนกลับได้</div></div>
     <div class="stat rv d3"><div class="n"><em>ฟรี</em></div><div class="t">ไม่มีค่าใช้จ่าย ไม่มีโฆษณา</div></div>
   </div>
@@ -374,7 +386,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
     <div class="sec-head rv">
       <div class="kick">ทำไมถึงต่าง</div>
       <h2>ยืดอายุเครื่อง<br>ไม่ใช่แค่<span class="yel">เร่งความเร็ว</span></h2>
-      <p class="sec-sub">โปรแกรมเร่งเครื่องส่วนใหญ่แลกความแรงกับความร้อน TPI ทำตรงข้าม — ลดสิ่งที่ทำให้ฮาร์ดแวร์เสื่อม แล้ววัดผลให้เห็น</p>
+      <p class="sec-sub">โปรแกรมเร่งเครื่องส่วนใหญ่แลกความแรงกับความร้อน TPI ทำตรงข้าม — ลดสิ่งที่ทำให้ฮาร์ดแวร์เสื่อม แล้วทดสอบให้เห็น</p>
     </div>
     <div class="feat-g">
       <div class="feat rv obs">
@@ -398,8 +410,8 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
           </div>
         </div>
         <div class="body">
-          <h3>วัดผล ก่อน–หลัง</h3>
-          <p>วัด CPU แรม อุณหภูมิ และจำนวนโปรเซสจากเครื่องจริง เทียบก่อน–หลังเป็นตาราง แล้วบันทึกเป็นรูปได้</p>
+          <h3>ทดสอบประสิทธิภาพ</h3>
+          <p>ทดสอบ CPU แรม อุณหภูมิ และจำนวนโปรเซสจากเครื่องจริง เทียบก่อน–หลังเป็นตาราง แล้วบันทึกเป็นรูปได้</p>
         </div>
       </div>
       <div class="feat rv d2 obs">
@@ -422,24 +434,24 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
 <!-- MEASURE -->
 <section class="sec measure obs" id="measure">
   <div class="wrap meas-g">
-    <div class="rv">
-      <div class="kick">วัดผล</div>
+    <div class="rv rv-l">
+      <div class="kick">ทดสอบประสิทธิภาพ</div>
       <h2>ดูผลจาก<br><span class="yel">เครื่องคุณเอง</span></h2>
-      <p class="sec-sub">วัดค่าก่อนปรับ ใช้พรีเซ็ต Longevity แล้ววัดอีกครั้ง โปรแกรมเทียบให้เป็นตาราง ค่าที่เปลี่ยนน้อยกว่าความคลาดเคลื่อนของการวัด จะรายงานว่าเท่าเดิม</p>
+      <p class="sec-sub">ทดสอบก่อนปรับ ใช้พรีเซ็ต Longevity แล้วทดสอบอีกครั้ง โปรแกรมเทียบให้เป็นตาราง ค่าที่เปลี่ยนน้อยกว่าความคลาดเคลื่อนของการวัด จะรายงานว่าเท่าเดิม</p>
       <div class="check-list">
-        <div class="check"><span class="ck">✓</span>วัดค่าเฉลี่ยต่อเนื่องหลายวินาที</div>
+        <div class="check"><span class="ck">✓</span>ทดสอบต่อเนื่องหลายวินาที เอาค่าเฉลี่ย</div>
         <div class="check"><span class="ck">✓</span>บันทึกผลเป็นภาพเก็บไว้อ้างอิงได้</div>
         <div class="check"><span class="ck">✓</span>ไม่ดีขึ้นก็บอกตามจริง</div>
       </div>
     </div>
-    <div class="mtable rv d1">
-      <div class="cap"><i></i>ผลการวัด ก่อน–หลังปรับแต่ง</div>
+    <div class="mtable rv rv-r d1">
+      <div class="cap"><i></i>ผลการทดสอบ ก่อน–หลังปรับแต่ง</div>
       <div class="trow hd"><span>ค่าที่วัด</span><span>ก่อน</span><span>หลัง</span><span style="justify-self:end">เปลี่ยนแปลง</span></div>
       <div class="trow"><span class="m">การใช้แรม</span><span class="b4">54%</span><span class="af">41%</span><span class="dchip">▼ 13%</span></div>
       <div class="trow"><span class="m">โปรเซสเบื้องหลัง</span><span class="b4">214</span><span class="af">186</span><span class="dchip">▼ 28</span></div>
       <div class="trow"><span class="m">อุณหภูมิ CPU</span><span class="b4">61°C</span><span class="af">55°C</span><span class="dchip">▼ 6°C</span></div>
       <div class="trow"><span class="m">CPU ขณะว่าง</span><span class="b4">9%</span><span class="af">4%</span><span class="dchip">▼ 5%</span></div>
-      <div class="meas-note">ภาพจำลองหน้าวัดผล — ตัวเลขจริงต่างกันตามเครื่องของแต่ละคน</div>
+      <div class="meas-note">ภาพจำลองหน้าทดสอบประสิทธิภาพ — ตัวเลขจริงต่างกันตามเครื่องของแต่ละคน</div>
     </div>
   </div>
 </section>
@@ -494,10 +506,12 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
 
 <!-- CTA -->
 <section class="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-grid"></div>
+  <div class="cta-mark" aria-hidden="true">ยืดอายุ</div>
   <div class="wrap cta-in rv">
     <h2>ให้เครื่องเดิม<br>อยู่ต่ออีกหลายปี</h2>
-    <p>ฟรี ติดตั้งใน 1 นาที ย้อนกลับได้ทุกอย่าง</p>
-    <a class="btn btn-ink btn-xl" href="#" data-dl>ดาวน์โหลด <span class="arr">↓</span></a>
+    <a class="btn btn-ink btn-xl" href="#" data-dl style="margin-top:14px">ดาวน์โหลด <span class="arr">↓</span></a>
     <div class="fine">เวอร์ชัน <span data-ver>v1.0.0</span> · Windows 10/11 (64-bit) · ~75 MB · <a href="https://github.com/21035-ctrl/TPI-app/releases">ดูทุกเวอร์ชัน</a></div>
   </div>
 </section>
@@ -514,54 +528,69 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
 </footer>
 
 <script>
-const DOWNLOAD_URL = "https://github.com/21035-ctrl/TPI-app/releases/latest/download/TPI-v1.0.0-win-x64.zip";
-const VERSION = "v1.0.0";
-document.querySelectorAll("[data-dl]").forEach(a => a.href = DOWNLOAD_URL);
-document.querySelectorAll("[data-ver]").forEach(e => e.textContent = VERSION);
+(function(){
+  const DOWNLOAD_URL = "https://github.com/21035-ctrl/TPI-app/releases/latest/download/TPI-v1.0.0-win-x64.zip";
+  const VERSION = "v1.0.0";
+  document.querySelectorAll("[data-dl]").forEach(a => a.href = DOWNLOAD_URL);
+  document.querySelectorAll("[data-ver]").forEach(e => e.textContent = VERSION);
 
-const nav = document.getElementById("nav");
-addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 24), {passive:true});
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nav = document.getElementById("nav");
+  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 24);
+  addEventListener("scroll", onScroll, {passive:true}); onScroll();
 
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-}), {threshold:.16});
-document.querySelectorAll(".rv").forEach(el => io.observe(el));
-
-const io2 = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add("in-view"); io2.unobserve(e.target); runCounters(e.target); }
-}), {threshold:.3});
-document.querySelectorAll(".obs, #heroStage").forEach(el => io2.observe(el));
-
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-function runCounters(scope){
-  scope.querySelectorAll("[data-count]").forEach(el => {
-    if (el.dataset.done) return; el.dataset.done = 1;
-    const target = +el.dataset.count;
-    if (reduce) { el.firstChild.textContent = target; return; }
-    const t0 = performance.now(), dur = 1400;
-    (function tick(t){
-      const p = Math.min((t - t0) / dur, 1), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
-      el.firstChild.textContent = v;
-      if (p < 1) requestAnimationFrame(tick);
-    })(t0);
-  });
-}
-const io3 = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { runCounters(e.target); io3.unobserve(e.target); }
-}), {threshold:.4});
-document.querySelectorAll(".stat").forEach(el => io3.observe(el));
-
-const stage = document.getElementById("heroStage");
-if (stage && !reduce) {
-  let raf = 0;
-  addEventListener("scroll", () => {
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = 0;
-      stage.style.transform = `translateY(${Math.min(scrollY,900) * .08}px)`;
+  function runCounters(scope){
+    scope.querySelectorAll("[data-count]").forEach(el => {
+      if (el.dataset.done) return; el.dataset.done = 1;
+      const target = +el.dataset.count;
+      if (reduce) { el.firstChild.textContent = target; return; }
+      const t0 = performance.now(), dur = 1400;
+      (function tick(t){
+        const p = Math.min((t - t0) / dur, 1), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        el.firstChild.textContent = v;
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
     });
-  }, {passive:true});
-}
+  }
+
+  const revEls = [...document.querySelectorAll(".rv")];
+  const visEls = [...document.querySelectorAll(".obs, #heroStage")];
+  const statEls = [...document.querySelectorAll(".stat")];
+
+  function reveal(el){ el.classList.add("in"); }
+  function activate(el){ el.classList.add("in-view"); runCounters(el); }
+
+  if (reduce || !("IntersectionObserver" in window)) {
+    revEls.forEach(reveal); visEls.forEach(activate); statEls.forEach(runCounters);
+  } else {
+    // threshold:0 + slight bottom margin — fires reliably even for elements taller than the viewport
+    const mk = (cb) => new IntersectionObserver((es,obs)=>es.forEach(e=>{
+      if (e.isIntersecting){ cb(e.target); obs.unobserve(e.target); }
+    }), {threshold:0, rootMargin:"0px 0px -10% 0px"});
+    const io  = mk(reveal);   revEls.forEach(el=>io.observe(el));
+    const io2 = mk(activate); visEls.forEach(el=>io2.observe(el));
+    const io3 = mk(runCounters); statEls.forEach(el=>io3.observe(el));
+
+    // failsafe: whatever is already on/above the fold reveals now, and nothing ever stays hidden
+    const sweep = () => {
+      const h = innerHeight;
+      revEls.forEach(el=>{ if(!el.classList.contains("in") && el.getBoundingClientRect().top < h*0.92) reveal(el); });
+      visEls.forEach(el=>{ if(!el.classList.contains("in-view") && el.getBoundingClientRect().top < h*0.92) activate(el); });
+      statEls.forEach(el=>{ if(el.getBoundingClientRect().top < h*0.92) runCounters(el); });
+    };
+    addEventListener("load", () => setTimeout(sweep, 60));
+    setTimeout(sweep, 700);
+  }
+
+  const stage = document.getElementById("heroStage");
+  if (stage && !reduce) {
+    let raf = 0;
+    addEventListener("scroll", () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; stage.style.transform = `translateY(${Math.min(window.scrollY,900) * .13}px)`; });
+    }, {passive:true});
+  }
+})();
 </script>
 </body>
 </html>
