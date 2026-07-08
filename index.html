@@ -37,6 +37,14 @@ img{max-width:100%;display:block}
 /* ===== slide (one presentation page per section) ===== */
 .slide{min-height:100vh;scroll-snap-align:center;scroll-snap-stop:always;
   display:flex;flex-direction:column;justify-content:center;position:relative;padding:92px 0 60px;overflow:hidden}
+/* ambient depth on the plain dark slides so a tall screen never looks empty */
+.slide.amb::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:70px 70px;
+  -webkit-mask-image:radial-gradient(68% 62% at 50% 46%,#000,transparent);mask-image:radial-gradient(68% 62% at 50% 46%,#000,transparent)}
+.slide.amb::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(42% 44% at var(--gx,82%) var(--gy,26%),rgba(255,224,54,.055),transparent 72%)}
+.slide.amb > .wrap{position:relative;z-index:1}
 
 /* reveal — plays every time a slide becomes live, resets when it leaves */
 .rv{opacity:0;transform:translateY(56px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
@@ -389,7 +397,7 @@ details p b{color:var(--text);font-weight:600}
 </header>
 
 <!-- 2 · NUMBERS -->
-<section class="slide" id="numbers">
+<section class="slide amb" id="numbers" style="--gx:82%;--gy:24%">
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center;max-width:none;margin-bottom:44px">
       <div class="kick" style="justify-content:center">โดยสรุป</div>
@@ -405,7 +413,7 @@ details p b{color:var(--text);font-weight:600}
 </section>
 
 <!-- 3 · FEATURES -->
-<section class="slide" id="features">
+<section class="slide amb" id="features" style="--gx:16%;--gy:26%">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="kick">ทำไมถึงต่าง</div>
@@ -430,7 +438,7 @@ details p b{color:var(--text);font-weight:600}
 </section>
 
 <!-- 4 · MEASURE -->
-<section class="slide measure" id="measure">
+<section class="slide measure amb" id="measure" style="--gx:86%;--gy:74%">
   <div class="wrap meas-g">
     <div class="rv rv-l">
       <div class="kick">ทดสอบประสิทธิภาพ</div>
@@ -455,7 +463,7 @@ details p b{color:var(--text);font-weight:600}
 </section>
 
 <!-- 5 · INSTALL -->
-<section class="slide" id="install">
+<section class="slide amb" id="install" style="--gx:18%;--gy:72%">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="kick">ติดตั้ง</div>
@@ -472,7 +480,7 @@ details p b{color:var(--text);font-weight:600}
 </section>
 
 <!-- 6 · FAQ -->
-<section class="slide" id="faq">
+<section class="slide amb" id="faq" style="--gx:80%;--gy:28%">
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center;max-width:none">
       <div class="kick" style="justify-content:center">คำถามที่พบบ่อย</div>
@@ -555,9 +563,8 @@ details p b{color:var(--text);font-weight:600}
       }
     }), {threshold:[0, 0.5, 1]});
     slides.forEach(s => io.observe(s));
-    // make the first slide live immediately (before first scroll)
-    addEventListener("load", () => { const first = slides[0]; first.classList.add("live"); runCounters(first); });
-    setTimeout(() => { if (!document.querySelector(".slide.live")) { const first = slides[0]; first.classList.add("live"); runCounters(first); } }, 300);
+    // paint + animate the first slide immediately (don't wait for scroll or the load event)
+    requestAnimationFrame(() => { slides[0].classList.add("live"); runCounters(slides[0]); setActive(slides[0]); });
   }
 
   // hero mockup parallax within its slide
