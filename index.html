@@ -27,22 +27,25 @@
   --maxw:1200px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;width:100%}
 ::selection{background:var(--brand);color:var(--ink)}
 
-/* reveal on scroll — pronounced, Nike-style */
-.rv{opacity:0;transform:translateY(60px);transition:opacity .9s var(--ease),transform .9s var(--ease);will-change:transform,opacity}
-.rv.in{opacity:1;transform:none}
-.rv-l{transform:translateX(-60px)}
-.rv-r{transform:translateX(60px)}
-.rv-s{transform:translateY(40px) scale(.9)}
-.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
+/* ===== slide (one presentation page per section) ===== */
+.slide{min-height:100vh;scroll-snap-align:center;scroll-snap-stop:always;
+  display:flex;flex-direction:column;justify-content:center;position:relative;padding:92px 0 60px;overflow:hidden}
 
-/* nav */
+/* reveal — plays every time a slide becomes live, resets when it leaves */
+.rv{opacity:0;transform:translateY(56px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.rv-l{transform:translateX(-64px)}
+.rv-r{transform:translateX(64px)}
+.slide.live .rv{opacity:1;transform:none}
+.rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}.rv.d4{transition-delay:.36s}
+
+/* ===== nav ===== */
 nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .35s,border-color .35s,backdrop-filter .35s;border-bottom:1px solid transparent}
 nav.scrolled{background:rgba(10,10,11,.82);backdrop-filter:blur(18px);border-color:var(--line)}
 .nav-in{max-width:var(--maxw);margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;gap:34px}
@@ -62,24 +65,31 @@ nav.scrolled{background:rgba(10,10,11,.82);backdrop-filter:blur(18px);border-col
 .btn-sm{padding:10px 20px;font-size:13px}
 .btn-xl{padding:17px 36px;font-size:16px}
 
-/* hero */
-.hero{position:relative;padding:150px 0 60px;min-height:90vh;display:flex;align-items:center;overflow:hidden}
+/* ===== slide dots (presentation nav) ===== */
+.dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;gap:13px}
+.dots a{width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.24);transition:height .35s var(--ease),background .3s}
+.dots a:hover{background:rgba(255,255,255,.55)}
+.dots a.active{background:var(--brand);height:26px}
+.dots.on-light a{background:rgba(17,17,17,.25)}
+.dots.on-light a:hover{background:rgba(17,17,17,.5)}
+.dots.on-light a.active{background:var(--ink)}
+
+/* ===== hero ===== */
 .hero-glow{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(50% 44% at 76% 42%,rgba(255,224,54,.09),transparent 68%),
-             radial-gradient(40% 40% at 10% 90%,rgba(255,224,54,.045),transparent 70%)}
+  background:radial-gradient(52% 44% at 76% 42%,rgba(255,224,54,.10),transparent 68%),radial-gradient(40% 40% at 10% 90%,rgba(255,224,54,.045),transparent 70%)}
 .hero-grid{position:absolute;inset:0;pointer-events:none;opacity:.5;
   background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
   background-size:74px 74px;
-  -webkit-mask-image:radial-gradient(72% 60% at 50% 40%,#000,transparent);mask-image:radial-gradient(72% 60% at 50% 40%,#000,transparent)}
-.hero-in{position:relative;display:grid;grid-template-columns:1.04fr .96fr;gap:48px;align-items:center;width:100%}
-.eyebrow{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:3px;color:var(--brand);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+  -webkit-mask-image:radial-gradient(72% 60% at 50% 45%,#000,transparent);mask-image:radial-gradient(72% 60% at 50% 45%,#000,transparent)}
+.hero-in{position:relative;display:grid;grid-template-columns:1.04fr .96fr;gap:48px;align-items:center}
+.eyebrow{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:3px;color:var(--brand);text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:12px}
 .eyebrow::before{content:"";width:30px;height:2px;background:var(--brand)}
-h1{font-weight:900;font-size:clamp(50px,7vw,100px);line-height:1.02;letter-spacing:-1px}
+h1{font-weight:900;font-size:clamp(48px,6.6vw,96px);line-height:1.03;letter-spacing:-1px}
 h1 .l{display:block;overflow:hidden}
-h1 .l span{display:inline-block;transform:translateY(110%);animation:rise 1s var(--ease) forwards}
-h1 .l:nth-child(2) span{animation-delay:.1s}
-h1 .l:nth-child(3) span{animation-delay:.2s}
-@keyframes rise{to{transform:none}}
+h1 .l span{display:inline-block;transform:translateY(110%);transition:transform .9s var(--ease)}
+.slide.live h1 .l span{transform:none}
+.slide.live h1 .l:nth-child(2) span{transition-delay:.09s}
+.slide.live h1 .l:nth-child(3) span{transition-delay:.18s}
 h1 .out{color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.82)}
 h1 .yel{color:var(--brand)}
 .hero-sub{margin:28px 0 34px;color:var(--muted);font-size:clamp(15px,1.5vw,18px);max-width:500px;font-weight:400}
@@ -87,6 +97,9 @@ h1 .yel{color:var(--brand)}
 .hero-meta{margin-top:26px;display:flex;gap:22px;flex-wrap:wrap;color:var(--dim);font-size:12.5px;font-weight:500}
 .hero-meta span{display:flex;align-items:center;gap:7px}
 .hero-meta i{width:5px;height:5px;border-radius:99px;background:var(--brand);flex:none}
+.scrollhint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--dim);font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scrollhint .ar{width:16px;height:16px;border-right:2px solid var(--brand);border-bottom:2px solid var(--brand);transform:rotate(45deg);animation:hintdrop 1.8s var(--ease) infinite}
+@keyframes hintdrop{0%,100%{transform:rotate(45deg) translate(-2px,-2px);opacity:.35}50%{transform:rotate(45deg) translate(2px,2px);opacity:1}}
 
 /* app mockup */
 .stage{position:relative;perspective:1600px}
@@ -99,9 +112,9 @@ h1 .yel{color:var(--brand)}
 .stage:hover .app{transform:rotateY(-4deg) rotateX(2deg)}
 .tbar{background:#1C1C2E;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 12px;font-weight:600;font-size:10px}
 .tbar img{width:14px;height:14px;border-radius:4px}
-.tbar .dots{margin-left:auto;display:flex;gap:6px}
-.tbar .dots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.22)}
-.app-body{display:grid;grid-template-columns:118px 1fr;min-height:330px}
+.tbar .dots2{margin-left:auto;display:flex;gap:6px}
+.tbar .dots2 i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.22)}
+.app-body{display:grid;grid-template-columns:118px 1fr;min-height:320px}
 .sb{background:var(--brand);color:var(--ink);padding:10px 0;font-weight:700;font-size:9.5px}
 .sb .it{padding:7px 12px;display:flex;align-items:center;gap:8px;opacity:.62}
 .sb .it.on{opacity:1;background:rgba(0,0,0,.09);border-left:3px solid var(--ink)}
@@ -115,98 +128,95 @@ h1 .yel{color:var(--brand)}
 .mcard .v small{font-size:9px;font-weight:700;color:#8E8E93}
 .chart{background:#fff;border-radius:9px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .chart .k{font-size:8px;color:#8E8E93;font-weight:700;letter-spacing:.6px;margin-bottom:6px}
-.chart svg{width:100%;height:88px;display:block}
+.chart svg{width:100%;height:80px;display:block}
 .cpu-line{fill:none;stroke:#3B82F6;stroke-width:2;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600}
-.in-view .cpu-line{animation:draw 2.4s var(--ease) .3s forwards}
+.slide.live .cpu-line{animation:draw 2.2s var(--ease) .3s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 .cpu-fill{fill:url(#gcpu);opacity:0}
-.in-view .cpu-fill{animation:fadein 1s ease 1.6s forwards}
+.slide.live .cpu-fill{animation:fadein 1s ease 1.5s forwards}
 @keyframes fadein{to{opacity:1}}
 .chip{position:absolute;background:#151517;border:1px solid var(--line2);border-radius:14px;padding:12px 16px;box-shadow:0 24px 60px -18px rgba(0,0,0,.8)}
 .chip .t{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.6px}
 .chip .n{font-family:var(--disp);font-weight:900;font-size:22px}
-.chip.ring{left:-40px;top:34px;display:flex;gap:12px;align-items:center;animation:float 8s ease-in-out .8s infinite}
+.chip.ring{left:-40px;top:30px;display:flex;gap:12px;align-items:center;animation:float 8s ease-in-out .8s infinite}
 .chip.ring svg{width:46px;height:46px}
 .chip.ring .arc{fill:none;stroke:var(--green);stroke-width:4.4;stroke-linecap:round;stroke-dasharray:126;stroke-dashoffset:126}
-.in-view .chip.ring .arc{animation:ringd 1.8s var(--ease) .9s forwards}
+.slide.live .chip.ring .arc{animation:ringd 1.8s var(--ease) .8s forwards}
 @keyframes ringd{to{stroke-dashoffset:23}}
-.chip.temp{right:-28px;bottom:52px;animation:float 6.4s ease-in-out .4s infinite}
+.chip.temp{right:-28px;bottom:46px;animation:float 6.4s ease-in-out .4s infinite}
 .chip.temp .n{color:var(--green)}
 .chip .n .u{font-size:11px;color:var(--muted);font-weight:600}
 
-/* stats */
-.stats{padding:92px 0 40px}
+/* ===== stats ===== */
 .stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.stat{border:1px solid var(--line);border-radius:18px;padding:28px 26px;background:linear-gradient(180deg,var(--panel),transparent);transition:transform .5s var(--ease),border-color .3s}
-.stat:hover{transform:translateY(-5px);border-color:rgba(255,224,54,.3)}
-.stat .n{font-family:var(--disp);font-weight:900;font-size:clamp(36px,4.4vw,54px);letter-spacing:-.5px;line-height:1}
+.stat{border:1px solid var(--line);border-radius:18px;padding:34px 26px;background:linear-gradient(180deg,var(--panel),transparent)}
+.stat .n{font-family:var(--disp);font-weight:900;font-size:clamp(40px,4.8vw,60px);letter-spacing:-.5px;line-height:1}
 .stat .n em{font-style:normal;color:var(--brand)}
 .stat .t{margin-top:10px;color:var(--muted);font-size:13.5px;font-weight:500}
 
-/* sections */
-.sec{padding:108px 0}
-.sec-head{margin-bottom:52px;max-width:720px}
+/* ===== section head ===== */
+.sec-head{margin-bottom:48px;max-width:720px}
 .kick{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:2.5px;color:var(--brand);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:11px}
 .kick::before{content:"";width:26px;height:2px;background:var(--brand)}
 h2{font-weight:900;font-size:clamp(32px,4.4vw,54px);line-height:1.1;letter-spacing:-.7px}
 h2 .yel{color:var(--brand)}
 .sec-sub{margin-top:18px;color:var(--muted);font-size:16px;max-width:580px;font-weight:400}
 
-/* feature cards */
+/* ===== features ===== */
 .feat-g{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .feat{border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--panel);transition:transform .5s var(--ease),border-color .3s,box-shadow .5s var(--ease);display:flex;flex-direction:column}
 .feat:hover{transform:translateY(-7px);border-color:rgba(255,224,54,.28);box-shadow:0 30px 70px -30px rgba(0,0,0,.8)}
-.feat .vis{height:200px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.feat .vis{height:180px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .feat .vis::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 0%,rgba(255,224,54,.06),transparent)}
-.feat .body{padding:26px 26px 30px}
+.feat .body{padding:24px 24px 28px}
 .feat h3{font-size:19px;font-weight:800;margin-bottom:9px}
-.feat p{color:var(--muted);font-size:14px}
-.ring-big{position:relative;width:126px;height:126px}
+.feat p{color:var(--muted);font-size:13.5px}
+.ring-big{position:relative;width:116px;height:116px}
 .ring-big svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring-big .bgc{fill:none;stroke:rgba(255,255,255,.09);stroke-width:9}
 .ring-big .fgc{fill:none;stroke:var(--green);stroke-width:9;stroke-linecap:round;stroke-dasharray:352;stroke-dashoffset:352}
-.in-view .ring-big .fgc{animation:ringbig 2s var(--ease) .3s forwards}
+.slide.live .ring-big .fgc{animation:ringbig 2s var(--ease) .3s forwards}
 @keyframes ringbig{to{stroke-dashoffset:46}}
-.ring-big .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--disp);font-weight:900;font-size:34px}
+.ring-big .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--disp);font-weight:900;font-size:32px}
 .ring-big .num small{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:1px}
 .mrows{width:82%;display:flex;flex-direction:column;gap:9px;position:relative;z-index:1}
 .mrow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:11px;padding:9px 13px;font-size:11.5px;font-weight:500;opacity:0;transform:translateX(-14px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
-.in-view .mrow{opacity:1;transform:none}
-.in-view .mrow:nth-child(2){transition-delay:.15s}
-.in-view .mrow:nth-child(3){transition-delay:.3s}
+.slide.live .mrow{opacity:1;transform:none}
+.slide.live .mrow:nth-child(2){transition-delay:.15s}
+.slide.live .mrow:nth-child(3){transition-delay:.3s}
 .mrow .lbl{color:var(--muted)}
-.mrow .dl{margin-left:auto;background:rgba(52,199,89,.13);color:var(--green);font-weight:700;border-radius:99px;padding:3px 11px;font-size:11px}
+.mrow .dl{margin-left:auto;background:rgba(52,199,89,.14);color:var(--green);font-weight:700;border-radius:99px;padding:3px 11px;font-size:11px}
 .undo-vis{width:78%;display:flex;flex-direction:column;gap:9px;position:relative;z-index:1}
 .urow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:11px;padding:9px 13px;font-size:11.5px;font-weight:500}
 .urow .sw{width:30px;height:17px;border-radius:99px;background:var(--green);position:relative;flex:none}
 .urow .sw::after{content:"";position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:99px;background:#fff;transition:transform .5s var(--ease)}
-.in-view .urow.off .sw{background:rgba(255,255,255,.2);transition:background .4s .9s}
-.in-view .urow.off .sw::after{transform:translateX(-13px);transition-delay:.9s}
+.slide.live .urow.off .sw{background:rgba(255,255,255,.2);transition:background .4s .9s}
+.slide.live .urow.off .sw::after{transform:translateX(-13px);transition-delay:.9s}
 .urow .ub{margin-left:auto;color:var(--muted);font-weight:600;font-size:11px}
 
-/* measure */
+/* ===== measure ===== */
 .measure{background:var(--bg2);border-block:1px solid var(--line)}
-.meas-g{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.meas-g{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .mtable{border:1px solid var(--line2);border-radius:18px;overflow:hidden;background:var(--panel);box-shadow:0 40px 90px -34px rgba(0,0,0,.85)}
-.mtable .cap{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.mtable .cap{padding:15px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
 .mtable .cap i{width:8px;height:8px;border-radius:99px;background:var(--green)}
-.trow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.1fr;padding:14px 22px;border-bottom:1px solid var(--line);font-size:13.5px;align-items:center}
+.trow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.1fr;padding:13px 22px;border-bottom:1px solid var(--line);font-size:13.5px;align-items:center}
 .trow:last-child{border-bottom:0}
 .trow.hd{color:var(--dim);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
 .trow .m{font-weight:600}
 .trow .b4{color:var(--muted);font-family:var(--disp)}
 .trow .af{font-weight:800;font-family:var(--disp)}
 .trow .dchip{justify-self:end;background:rgba(52,199,89,.12);color:var(--green);font-weight:700;border-radius:99px;padding:4px 13px;font-size:12px;opacity:0;transform:scale(.7);transition:opacity .5s var(--ease),transform .5s var(--ease)}
-.in-view .trow .dchip{opacity:1;transform:none}
-.in-view .trow:nth-child(3) .dchip{transition-delay:.15s}
-.in-view .trow:nth-child(4) .dchip{transition-delay:.3s}
-.in-view .trow:nth-child(5) .dchip{transition-delay:.45s}
+.slide.live .trow .dchip{opacity:1;transform:none}
+.slide.live .trow:nth-child(3) .dchip{transition-delay:.15s}
+.slide.live .trow:nth-child(4) .dchip{transition-delay:.3s}
+.slide.live .trow:nth-child(5) .dchip{transition-delay:.45s}
 .meas-note{color:var(--dim);font-size:12px;padding:13px 22px;border-top:1px solid var(--line)}
-.check-list{margin-top:30px;display:flex;flex-direction:column;gap:14px}
+.check-list{margin-top:28px;display:flex;flex-direction:column;gap:14px}
 .check{display:flex;gap:13px;align-items:center;font-size:15px;color:var(--muted)}
 .check .ck{flex:none;width:20px;height:20px;border-radius:99px;background:rgba(255,224,54,.13);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}
 
-/* install */
+/* ===== install ===== */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .step{border:1px solid var(--line);border-radius:22px;padding:32px 30px;background:var(--panel);transition:transform .5s var(--ease),border-color .3s}
 .step:hover{transform:translateY(-5px);border-color:rgba(255,224,54,.28)}
@@ -214,70 +224,74 @@ h2 .yel{color:var(--brand)}
 .step h3{font-size:18px;font-weight:800;margin-bottom:8px}
 .step p{color:var(--muted);font-size:14px}
 .step p b{color:var(--brand);font-weight:600}
-.step-note{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:17px 22px;display:flex;gap:13px;align-items:flex-start;color:var(--muted);font-size:13.5px;background:var(--panel)}
+.step-note{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:16px 22px;display:flex;gap:13px;align-items:flex-start;color:var(--muted);font-size:13.5px;background:var(--panel)}
 .step-note i{flex:none;width:8px;height:8px;margin-top:7px;border-radius:99px;background:var(--brand)}
 .step-note b{color:var(--text)}
 
-/* faq */
-.faq{max-width:800px;margin:0 auto}
+/* ===== faq ===== */
+.faq{max-width:800px;margin:0 auto;width:100%}
 details{border-bottom:1px solid var(--line)}
-summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:16px;padding:23px 4px;font-weight:600;font-size:16px;transition:color .2s}
+summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:16px;padding:21px 4px;font-weight:600;font-size:16px;transition:color .2s}
 summary::-webkit-details-marker{display:none}
 summary:hover{color:var(--brand)}
 summary .pm{margin-left:auto;font-family:var(--disp);font-weight:700;color:var(--brand);transition:transform .35s var(--ease);font-size:19px;flex:none}
 details[open] .pm{transform:rotate(45deg)}
-details p{padding:0 4px 24px;color:var(--muted);font-size:14.5px;max-width:680px}
+details p{padding:0 4px 22px;color:var(--muted);font-size:14.5px;max-width:680px}
 details p b{color:var(--text);font-weight:600}
 
-/* cta */
-.cta{background:var(--brand);color:var(--ink);padding:120px 0;position:relative;overflow:hidden}
+/* ===== cta ===== */
+.cta{background:var(--brand);color:var(--ink)}
 .cta-grid{position:absolute;inset:0;pointer-events:none;opacity:.6;
   background-image:linear-gradient(rgba(0,0,0,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.055) 1px,transparent 1px);
   background-size:66px 66px;
   -webkit-mask-image:radial-gradient(72% 78% at 50% 50%,#000,transparent);mask-image:radial-gradient(72% 78% at 50% 50%,#000,transparent)}
 .cta-glow{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(60% 70% at 50% 130%,rgba(0,0,0,.16),transparent 68%),radial-gradient(50% 50% at 50% -20%,rgba(255,255,255,.4),transparent 70%)}
-.cta-mark{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;pointer-events:none;
+.cta-mark{position:absolute;left:0;right:0;top:44%;transform:translateY(-50%);text-align:center;pointer-events:none;
   font-family:var(--disp);font-weight:900;font-size:clamp(88px,17vw,240px);letter-spacing:1px;white-space:nowrap;
   color:transparent;-webkit-text-stroke:2px rgba(17,17,17,.09);line-height:1}
-.cta-in{position:relative;text-align:center}
+.cta-in{position:relative;text-align:center;z-index:1}
 .cta h2{color:var(--ink);font-size:clamp(34px,5vw,60px)}
-.cta p{margin:16px auto 34px;font-weight:500;color:rgba(17,17,17,.72);max-width:480px;font-size:16px}
 .btn-ink{background:var(--ink);color:var(--brand);box-shadow:0 18px 44px -14px rgba(0,0,0,.45)}
 .btn-ink:hover{transform:translateY(-3px);box-shadow:0 26px 56px -14px rgba(0,0,0,.55)}
 .btn-ink .arr{transition:transform .3s var(--ease)}
 .btn-ink:hover .arr{transform:translateY(3px)}
 .cta .fine{margin-top:20px;font-size:12.5px;font-weight:600;color:rgba(17,17,17,.55)}
 .cta .fine a{text-decoration:underline}
+.cta-foot{position:absolute;left:0;right:0;bottom:0;padding:22px 0;border-top:1px solid rgba(17,17,17,.12)}
+.foot{display:flex;align-items:center;gap:20px;flex-wrap:wrap;color:rgba(17,17,17,.6);font-size:12.5px;font-weight:500}
+.foot img{width:26px;height:26px;border-radius:7px}
+.foot .right{margin-left:auto;display:flex;gap:20px}
+.foot a{font-weight:600}
+.foot a:hover{color:var(--ink)}
 
-/* footer */
-footer{padding:48px 0;border-top:1px solid var(--line)}
-.foot{display:flex;align-items:center;gap:22px;flex-wrap:wrap;color:var(--dim);font-size:13px}
-.foot img{width:30px;height:30px;border-radius:8px}
-.foot .right{margin-left:auto;display:flex;gap:22px}
-.foot a:hover{color:var(--text)}
-
-/* responsive */
+/* ===== responsive: on small/short screens, drop snap for natural scroll ===== */
+@media(max-width:1020px),(max-height:760px){
+  html{scroll-snap-type:none}
+  .slide{min-height:auto;padding:104px 0 76px;scroll-snap-align:none}
+  .dots{display:none}
+  .scrollhint{display:none}
+}
 @media(max-width:1020px){
-  .hero-in{grid-template-columns:1fr;gap:64px}
-  .stage{max-width:540px;margin:0 auto}
+  .hero-in{grid-template-columns:1fr;gap:60px}
+  .stage{max-width:520px;margin:0 auto}
   .stats-g{grid-template-columns:repeat(2,1fr)}
-  .feat-g{grid-template-columns:1fr;max-width:500px;margin:0 auto}
-  .meas-g{grid-template-columns:1fr;gap:44px}
-  .steps{grid-template-columns:1fr;max-width:500px;margin:0 auto}
+  .feat-g{grid-template-columns:1fr;max-width:480px;margin:0 auto}
+  .meas-g{grid-template-columns:1fr;gap:40px}
+  .steps{grid-template-columns:1fr;max-width:480px;margin:0 auto}
   .nav-links{display:none}
+  .cta-foot{position:static;margin-top:44px}
 }
 @media(max-width:640px){
-  .hero{padding-top:118px}
-  .chip.ring{left:-6px;top:16px;transform:scale(.85)}
-  .chip.temp{right:-4px;bottom:28px;transform:scale(.85)}
+  .chip.ring{left:-6px;top:14px;transform:scale(.85)}
+  .chip.temp{right:-4px;bottom:26px;transform:scale(.85)}
   .stats-g{grid-template-columns:1fr 1fr;gap:12px}
-  .stat{padding:22px 18px}
+  .stat{padding:24px 18px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
-  h1 .l span{transform:none}
   .rv{opacity:1;transform:none}
+  h1 .l span{transform:none}
 }
 </style>
 </head>
@@ -292,41 +306,49 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
       <a href="#install">ติดตั้ง</a>
       <a href="#faq">คำถามที่พบบ่อย</a>
     </div>
-    <div class="nav-cta">
-      <a class="btn btn-y btn-sm" href="#" data-dl>ดาวน์โหลด</a>
-    </div>
+    <div class="nav-cta"><a class="btn btn-y btn-sm" href="#" data-dl>ดาวน์โหลด</a></div>
   </div>
 </nav>
 
-<!-- HERO -->
-<header class="hero" id="top">
+<!-- slide dots -->
+<div class="dots" id="dots">
+  <a href="#top" class="active" title="หน้าแรก"></a>
+  <a href="#numbers" title="ตัวเลข"></a>
+  <a href="#features" title="ฟีเจอร์"></a>
+  <a href="#measure" title="ทดสอบประสิทธิภาพ"></a>
+  <a href="#install" title="ติดตั้ง"></a>
+  <a href="#faq" title="คำถามที่พบบ่อย"></a>
+  <a href="#download" title="ดาวน์โหลด"></a>
+</div>
+
+<!-- 1 · HERO -->
+<header class="slide" id="top">
   <div class="hero-glow"></div>
   <div class="hero-grid"></div>
   <div class="wrap hero-in">
     <div>
-      <div class="eyebrow">Tweak Program Interface</div>
+      <div class="eyebrow rv">Tweak Program Interface</div>
       <h1>
         <span class="l"><span>เครื่องเดิม</span></span>
         <span class="l"><span class="out">อยู่ต่อ</span></span>
         <span class="l"><span class="yel">อีกหลายปี</span></span>
       </h1>
-      <p class="hero-sub">ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD ทดสอบประสิทธิภาพก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง</p>
-      <div class="hero-cta">
+      <p class="hero-sub rv d2">ปรับแต่ง Windows ให้ทำงานเบาลง ลดความร้อนและการเขียน SSD ทดสอบประสิทธิภาพก่อน–หลังได้ในตัว และย้อนกลับได้ทุกอย่าง</p>
+      <div class="hero-cta rv d3">
         <a class="btn btn-y btn-xl" href="#" data-dl>ดาวน์โหลด <span class="arr">→</span></a>
         <a class="btn btn-ghost" href="#features">ดูฟีเจอร์</a>
       </div>
-      <div class="hero-meta">
+      <div class="hero-meta rv d4">
         <span><i></i>Windows 10 / 11</span>
         <span><i></i>ไฟล์เดียว ~75 MB</span>
         <span><i></i>ไม่ต้องลง .NET</span>
         <span><i></i>ฟรี</span>
       </div>
     </div>
-
     <div class="stage rv d2" id="heroStage">
       <div class="float">
         <div class="app">
-          <div class="tbar"><img src="assets/logo.png" alt="">TPI · Tweak Program Interface<span class="dots"><i></i><i></i><i></i></span></div>
+          <div class="tbar"><img src="assets/logo.png" alt="">TPI · Tweak Program Interface<span class="dots2"><i></i><i></i><i></i></span></div>
           <div class="app-body">
             <div class="sb">
               <div class="it on"><span class="ic"></span>หน้าหลัก</div>
@@ -346,15 +368,10 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
               </div>
               <div class="chart">
                 <div class="k">CPU LOAD — เรียลไทม์</div>
-                <svg viewBox="0 0 300 88" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="gcpu" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="#3B82F6" stop-opacity=".28"/>
-                      <stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <path class="cpu-fill" d="M0,66 L20,58 L40,62 L60,44 L80,52 L100,38 L120,46 L140,30 L160,40 L180,26 L200,34 L220,20 L240,30 L260,18 L280,26 L300,16 L300,88 L0,88 Z"/>
-                  <polyline class="cpu-line" points="0,66 20,58 40,62 60,44 80,52 100,38 120,46 140,30 160,40 180,26 200,34 220,20 240,30 260,18 280,26 300,16"/>
+                <svg viewBox="0 0 300 80" preserveAspectRatio="none">
+                  <defs><linearGradient id="gcpu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B82F6" stop-opacity=".28"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
+                  <path class="cpu-fill" d="M0,60 L20,52 L40,56 L60,40 L80,47 L100,34 L120,42 L140,27 L160,36 L180,23 L200,31 L220,18 L240,27 L260,16 L280,24 L300,14 L300,80 L0,80 Z"/>
+                  <polyline class="cpu-line" points="0,60 20,52 40,56 60,40 80,47 100,34 120,42 140,27 160,36 180,23 200,31 220,18 240,27 260,16 280,24 300,14"/>
                 </svg>
               </div>
             </div>
@@ -368,71 +385,52 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
       <div class="chip temp"><div class="t">อุณหภูมิ CPU</div><div class="n">−6<span class="u"> °C</span></div></div>
     </div>
   </div>
+  <div class="scrollhint">เลื่อนลง<span class="ar"></span></div>
 </header>
 
-<!-- STATS -->
-<section class="stats">
-  <div class="wrap stats-g">
-    <div class="stat rv"><div class="n"><em data-count="55">0</em></div><div class="t">รายการปรับแต่ง แยกหมวด อธิบายเป็นภาษาไทย</div></div>
-    <div class="stat rv d1"><div class="n"><em data-count="11">0</em></div><div class="t">หน้าใช้งาน ตั้งแต่มอนิเตอร์ถึงทดสอบ</div></div>
-    <div class="stat rv d2"><div class="n"><em data-count="100">0</em>%</div><div class="t">ปรับแต่งแล้วย้อนกลับได้</div></div>
-    <div class="stat rv d3"><div class="n"><em>ฟรี</em></div><div class="t">ไม่มีค่าใช้จ่าย ไม่มีโฆษณา</div></div>
+<!-- 2 · NUMBERS -->
+<section class="slide" id="numbers">
+  <div class="wrap">
+    <div class="sec-head rv" style="text-align:center;max-width:none;margin-bottom:44px">
+      <div class="kick" style="justify-content:center">โดยสรุป</div>
+      <h2>เครื่องมือเดียว <span class="yel">ครบทุกอย่าง</span></h2>
+    </div>
+    <div class="stats-g">
+      <div class="stat rv"><div class="n"><em data-count="55">0</em></div><div class="t">รายการปรับแต่ง แยกหมวด อธิบายเป็นภาษาไทย</div></div>
+      <div class="stat rv d1"><div class="n"><em data-count="11">0</em></div><div class="t">หน้าใช้งาน ตั้งแต่มอนิเตอร์ถึงทดสอบ</div></div>
+      <div class="stat rv d2"><div class="n"><em data-count="100">0</em>%</div><div class="t">ปรับแต่งแล้วย้อนกลับได้</div></div>
+      <div class="stat rv d3"><div class="n"><em>ฟรี</em></div><div class="t">ไม่มีค่าใช้จ่าย ไม่มีโฆษณา</div></div>
+    </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="sec" id="features">
+<!-- 3 · FEATURES -->
+<section class="slide" id="features">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="kick">ทำไมถึงต่าง</div>
-      <h2>ยืดอายุเครื่อง<br>ไม่ใช่แค่<span class="yel">เร่งความเร็ว</span></h2>
+      <h2>ยืดอายุเครื่อง ไม่ใช่แค่<span class="yel">เร่งความเร็ว</span></h2>
       <p class="sec-sub">โปรแกรมเร่งเครื่องส่วนใหญ่แลกความแรงกับความร้อน TPI ทำตรงข้าม — ลดสิ่งที่ทำให้ฮาร์ดแวร์เสื่อม แล้วทดสอบให้เห็น</p>
     </div>
     <div class="feat-g">
-      <div class="feat rv obs">
-        <div class="vis">
-          <div class="ring-big">
-            <svg viewBox="0 0 128 128"><circle class="bgc" cx="64" cy="64" r="56"/><circle class="fgc" cx="64" cy="64" r="56"/></svg>
-            <div class="num"><span data-count="87">0</span><small>HEALTH</small></div>
-          </div>
-        </div>
-        <div class="body">
-          <h3>คะแนนสุขภาพเครื่อง</h3>
-          <p>ให้คะแนน 0–100 จากอุณหภูมิ อายุ SSD (ค่า S.M.A.R.T.) แรม และโปรแกรมเบื้องหลัง พร้อมบอกว่าควรแก้อะไรก่อน</p>
-        </div>
+      <div class="feat rv">
+        <div class="vis"><div class="ring-big"><svg viewBox="0 0 128 128"><circle class="bgc" cx="64" cy="64" r="56"/><circle class="fgc" cx="64" cy="64" r="56"/></svg><div class="num"><span data-count="87">0</span><small>HEALTH</small></div></div></div>
+        <div class="body"><h3>คะแนนสุขภาพเครื่อง</h3><p>ให้คะแนน 0–100 จากอุณหภูมิ อายุ SSD (ค่า S.M.A.R.T.) แรม และโปรแกรมเบื้องหลัง พร้อมบอกว่าควรแก้อะไรก่อน</p></div>
       </div>
-      <div class="feat rv d1 obs">
-        <div class="vis">
-          <div class="mrows">
-            <div class="mrow"><span class="lbl">แรม</span><span class="dl">▼ ลดลง</span></div>
-            <div class="mrow"><span class="lbl">โปรเซสเบื้องหลัง</span><span class="dl">▼ ลดลง</span></div>
-            <div class="mrow"><span class="lbl">อุณหภูมิ CPU</span><span class="dl">▼ ลดลง</span></div>
-          </div>
-        </div>
-        <div class="body">
-          <h3>ทดสอบประสิทธิภาพ</h3>
-          <p>ทดสอบ CPU แรม อุณหภูมิ และจำนวนโปรเซสจากเครื่องจริง เทียบก่อน–หลังเป็นตาราง แล้วบันทึกเป็นรูปได้</p>
-        </div>
+      <div class="feat rv d1">
+        <div class="vis"><div class="mrows"><div class="mrow"><span class="lbl">แรม</span><span class="dl">▼ ลดลง</span></div><div class="mrow"><span class="lbl">โปรเซสเบื้องหลัง</span><span class="dl">▼ ลดลง</span></div><div class="mrow"><span class="lbl">อุณหภูมิ CPU</span><span class="dl">▼ ลดลง</span></div></div></div>
+        <div class="body"><h3>ทดสอบประสิทธิภาพ</h3><p>ทดสอบ CPU แรม อุณหภูมิ และจำนวนโปรเซสจากเครื่องจริง เทียบก่อน–หลังเป็นตาราง แล้วบันทึกเป็นรูปได้</p></div>
       </div>
-      <div class="feat rv d2 obs">
-        <div class="vis">
-          <div class="undo-vis">
-            <div class="urow off"><span class="sw"></span>ปิด Windows Search<span class="ub">ย้อนกลับ</span></div>
-            <div class="urow"><span class="sw"></span>ปิด Telemetry<span class="ub">ย้อนกลับ</span></div>
-            <div class="urow"><span class="sw"></span>Balanced Power Plan<span class="ub">ย้อนกลับ</span></div>
-          </div>
-        </div>
-        <div class="body">
-          <h3>ย้อนกลับได้ทุกอย่าง</h3>
-          <p>สร้างจุดคืนค่าอัตโนมัติ สำรองค่าเดิมทุกครั้ง กดย้อนทีละรายการหรือทั้งหมดได้จากหน้าประวัติ</p>
-        </div>
+      <div class="feat rv d2">
+        <div class="vis"><div class="undo-vis"><div class="urow off"><span class="sw"></span>ปิด Windows Search<span class="ub">ย้อนกลับ</span></div><div class="urow"><span class="sw"></span>ปิด Telemetry<span class="ub">ย้อนกลับ</span></div><div class="urow"><span class="sw"></span>Balanced Power Plan<span class="ub">ย้อนกลับ</span></div></div></div>
+        <div class="body"><h3>ย้อนกลับได้ทุกอย่าง</h3><p>สร้างจุดคืนค่าอัตโนมัติ สำรองค่าเดิมทุกครั้ง กดย้อนทีละรายการหรือทั้งหมดได้จากหน้าประวัติ</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MEASURE -->
-<section class="sec measure obs" id="measure">
+<!-- 4 · MEASURE -->
+<section class="slide measure" id="measure">
   <div class="wrap meas-g">
     <div class="rv rv-l">
       <div class="kick">ทดสอบประสิทธิภาพ</div>
@@ -446,7 +444,7 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
     </div>
     <div class="mtable rv rv-r d1">
       <div class="cap"><i></i>ผลการทดสอบ ก่อน–หลังปรับแต่ง</div>
-      <div class="trow hd"><span>ค่าที่วัด</span><span>ก่อน</span><span>หลัง</span><span style="justify-self:end">เปลี่ยนแปลง</span></div>
+      <div class="trow hd"><span>รายการ</span><span>ก่อน</span><span>หลัง</span><span style="justify-self:end">เปลี่ยนแปลง</span></div>
       <div class="trow"><span class="m">การใช้แรม</span><span class="b4">54%</span><span class="af">41%</span><span class="dchip">▼ 13%</span></div>
       <div class="trow"><span class="m">โปรเซสเบื้องหลัง</span><span class="b4">214</span><span class="af">186</span><span class="dchip">▼ 28</span></div>
       <div class="trow"><span class="m">อุณหภูมิ CPU</span><span class="b4">61°C</span><span class="af">55°C</span><span class="dchip">▼ 6°C</span></div>
@@ -456,8 +454,8 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- INSTALL -->
-<section class="sec" id="install">
+<!-- 5 · INSTALL -->
+<section class="slide" id="install">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="kick">ติดตั้ง</div>
@@ -469,63 +467,44 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
       <div class="step rv d1"><div class="num">02</div><h3>ผ่าน SmartScreen</h3><p>ถ้ามีหน้าจอสีฟ้าขึ้น คลิก <b>More info</b> แล้ว <b>Run anyway</b> (โปรแกรมยังไม่ได้ code-sign)</p></div>
       <div class="step rv d2"><div class="num">03</div><h3>กด Yes ที่ UAC</h3><p>โปรแกรมขอสิทธิ์ผู้ดูแลระบบเพื่ออ่านเซ็นเซอร์และปรับแต่งระบบ กด <b>Yes</b> แล้วใช้ได้เลย</p></div>
     </div>
-    <div class="step-note rv"><i></i><span>ก่อนปรับครั้งแรก โปรแกรมสร้าง<b>จุดคืนค่า Windows</b>ให้อัตโนมัติ และสำรองค่าเดิมเป็นไฟล์ .reg ทุกครั้ง</span></div>
+    <div class="step-note rv d3"><i></i><span>ก่อนปรับครั้งแรก โปรแกรมสร้าง<b>จุดคืนค่า Windows</b>ให้อัตโนมัติ และสำรองค่าเดิมเป็นไฟล์ .reg ทุกครั้ง</span></div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="sec" id="faq" style="padding-top:0">
+<!-- 6 · FAQ -->
+<section class="slide" id="faq">
   <div class="wrap">
     <div class="sec-head rv" style="text-align:center;max-width:none">
       <div class="kick" style="justify-content:center">คำถามที่พบบ่อย</div>
     </div>
-    <div class="faq rv">
-      <details>
-        <summary>ปรับแล้วเครื่องมีปัญหา จะแก้ยังไง?<span class="pm">+</span></summary>
-        <p>โปรแกรมสร้าง <b>จุดคืนค่า (Restore Point)</b> ให้อัตโนมัติก่อนปรับครั้งแรก และสำรองค่าเดิมทุกครั้ง เข้าหน้า <b>ประวัติและการย้อนกลับ</b> กดคืนค่าได้ทีละรายการหรือทั้งหมด รายการที่เสี่ยงจะมีป้ายเตือนและถามยืนยันก่อน</p>
-      </details>
-      <details>
-        <summary>ต่างจากโปรแกรมเร่งเครื่องทั่วไปยังไง?<span class="pm">+</span></summary>
-        <p>TPI เน้น<b>ยืดอายุเครื่อง</b> — ลดความร้อน ลดการเขียน SSD ลดงานเบื้องหลัง ไม่ใช่รีดความแรงแลกกับอายุฮาร์ดแวร์ ทุกรายการบอกตรง ๆ ว่าตัวไหนยืดอายุ ตัวไหนแลกอายุ และมีหน้าวัดผลให้ดูจากเครื่องคุณเอง</p>
-      </details>
-      <details>
-        <summary>ทำไม Windows เตือนตอนเปิดไฟล์?<span class="pm">+</span></summary>
-        <p>เพราะยังไม่ได้ซื้อใบรับรอง code-signing (ราคาสูงสำหรับโครงงานนักเรียน) SmartScreen จึงเตือนตามปกติ คลิก <b>More info → Run anyway</b> เพื่อเปิด</p>
-      </details>
-      <details>
-        <summary>ใช้กับโน้ตบุ๊กหรือเครื่องเก่าได้ไหม?<span class="pm">+</span></summary>
-        <p>ได้ และเหมาะกับเครื่องเก่าที่สุด รองรับ Windows 10/11 (64-bit) แรม 4 GB ขึ้นไป รายการที่ต้องการสเปกขั้นต่ำ โปรแกรมจะกันให้เองอัตโนมัติ</p>
-      </details>
-      <details>
-        <summary>ฟรีไหม เก็บข้อมูลอะไรบ้าง?<span class="pm">+</span></summary>
-        <p><b>ฟรี ไม่มีโฆษณา ไม่ส่งข้อมูลออกนอกเครื่อง</b> ประวัติ โปรไฟล์ และไฟล์สำรอง เก็บอยู่ในเครื่องคุณเท่านั้น พัฒนาเป็นโครงงานส่งแข่งขัน NSC 2026</p>
-      </details>
+    <div class="faq rv d1">
+      <details><summary>ปรับแล้วเครื่องมีปัญหา จะแก้ยังไง?<span class="pm">+</span></summary><p>โปรแกรมสร้าง <b>จุดคืนค่า (Restore Point)</b> ให้อัตโนมัติก่อนปรับครั้งแรก และสำรองค่าเดิมทุกครั้ง เข้าหน้า <b>ประวัติและการย้อนกลับ</b> กดคืนค่าได้ทีละรายการหรือทั้งหมด รายการที่เสี่ยงจะมีป้ายเตือนและถามยืนยันก่อน</p></details>
+      <details><summary>ต่างจากโปรแกรมเร่งเครื่องทั่วไปยังไง?<span class="pm">+</span></summary><p>TPI เน้น<b>ยืดอายุเครื่อง</b> — ลดความร้อน ลดการเขียน SSD ลดงานเบื้องหลัง ไม่ใช่รีดความแรงแลกกับอายุฮาร์ดแวร์ ทุกรายการบอกตรง ๆ ว่าตัวไหนยืดอายุ ตัวไหนแลกอายุ และมีหน้าทดสอบให้ดูจากเครื่องคุณเอง</p></details>
+      <details><summary>ทำไม Windows เตือนตอนเปิดไฟล์?<span class="pm">+</span></summary><p>เพราะยังไม่ได้ซื้อใบรับรอง code-signing (ราคาสูงสำหรับโครงงานนักเรียน) SmartScreen จึงเตือนตามปกติ คลิก <b>More info → Run anyway</b> เพื่อเปิด</p></details>
+      <details><summary>ใช้กับโน้ตบุ๊กหรือเครื่องเก่าได้ไหม?<span class="pm">+</span></summary><p>ได้ และเหมาะกับเครื่องเก่าที่สุด รองรับ Windows 10/11 (64-bit) แรม 4 GB ขึ้นไป รายการที่ต้องการสเปกขั้นต่ำ โปรแกรมจะกันให้เองอัตโนมัติ</p></details>
+      <details><summary>ฟรีไหม เก็บข้อมูลอะไรบ้าง?<span class="pm">+</span></summary><p><b>ฟรี ไม่มีโฆษณา ไม่ส่งข้อมูลออกนอกเครื่อง</b> ประวัติ โปรไฟล์ และไฟล์สำรอง เก็บอยู่ในเครื่องคุณเท่านั้น พัฒนาเป็นโครงงานส่งแข่งขัน NSC 2026</p></details>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta">
+<!-- 7 · CTA -->
+<section class="slide cta" id="download">
   <div class="cta-glow"></div>
   <div class="cta-grid"></div>
   <div class="cta-mark" aria-hidden="true">ยืดอายุ</div>
   <div class="wrap cta-in rv">
     <h2>ให้เครื่องเดิม<br>อยู่ต่ออีกหลายปี</h2>
-    <a class="btn btn-ink btn-xl" href="#" data-dl style="margin-top:14px">ดาวน์โหลด <span class="arr">↓</span></a>
+    <a class="btn btn-ink btn-xl" href="#" data-dl style="margin-top:16px">ดาวน์โหลด <span class="arr">↓</span></a>
     <div class="fine">เวอร์ชัน <span data-ver>v1.0.0</span> · Windows 10/11 (64-bit) · ~75 MB · <a href="https://github.com/21035-ctrl/TPI-app/releases">ดูทุกเวอร์ชัน</a></div>
   </div>
-</section>
-
-<footer>
-  <div class="wrap foot">
-    <img src="assets/logo.png" alt="TPI">
-    <span>โครงงานส่งแข่งขัน NSC 2026 · โรงเรียนราชวินิตบางเขน</span>
-    <div class="right">
-      <a href="https://github.com/21035-ctrl/TPI-app/releases">GitHub</a>
-      <a href="#faq">ช่วยเหลือ</a>
+  <div class="cta-foot">
+    <div class="wrap foot">
+      <img src="assets/logo.png" alt="TPI">
+      <span>โครงงานส่งแข่งขัน NSC 2026 · โรงเรียนราชวินิตบางเขน</span>
+      <div class="right"><a href="https://github.com/21035-ctrl/TPI-app/releases">GitHub</a><a href="#faq">ช่วยเหลือ</a></div>
     </div>
   </div>
-</footer>
+</section>
 
 <script>
 (function(){
@@ -536,15 +515,14 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
 
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const nav = document.getElementById("nav");
-  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 24);
-  addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  addEventListener("scroll", () => nav.classList.toggle("scrolled", window.scrollY > 24), {passive:true});
 
   function runCounters(scope){
     scope.querySelectorAll("[data-count]").forEach(el => {
       if (el.dataset.done) return; el.dataset.done = 1;
       const target = +el.dataset.count;
       if (reduce) { el.firstChild.textContent = target; return; }
-      const t0 = performance.now(), dur = 1400;
+      const t0 = performance.now(), dur = 1300;
       (function tick(t){
         const p = Math.min((t - t0) / dur, 1), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
         el.firstChild.textContent = v;
@@ -552,42 +530,43 @@ footer{padding:48px 0;border-top:1px solid var(--line)}
       })(performance.now());
     });
   }
-
-  const revEls = [...document.querySelectorAll(".rv")];
-  const visEls = [...document.querySelectorAll(".obs, #heroStage")];
-  const statEls = [...document.querySelectorAll(".stat")];
-
-  function reveal(el){ el.classList.add("in"); }
-  function activate(el){ el.classList.add("in-view"); runCounters(el); }
-
-  if (reduce || !("IntersectionObserver" in window)) {
-    revEls.forEach(reveal); visEls.forEach(activate); statEls.forEach(runCounters);
-  } else {
-    // threshold:0 + slight bottom margin — fires reliably even for elements taller than the viewport
-    const mk = (cb) => new IntersectionObserver((es,obs)=>es.forEach(e=>{
-      if (e.isIntersecting){ cb(e.target); obs.unobserve(e.target); }
-    }), {threshold:0, rootMargin:"0px 0px -10% 0px"});
-    const io  = mk(reveal);   revEls.forEach(el=>io.observe(el));
-    const io2 = mk(activate); visEls.forEach(el=>io2.observe(el));
-    const io3 = mk(runCounters); statEls.forEach(el=>io3.observe(el));
-
-    // failsafe: whatever is already on/above the fold reveals now, and nothing ever stays hidden
-    const sweep = () => {
-      const h = innerHeight;
-      revEls.forEach(el=>{ if(!el.classList.contains("in") && el.getBoundingClientRect().top < h*0.92) reveal(el); });
-      visEls.forEach(el=>{ if(!el.classList.contains("in-view") && el.getBoundingClientRect().top < h*0.92) activate(el); });
-      statEls.forEach(el=>{ if(el.getBoundingClientRect().top < h*0.92) runCounters(el); });
-    };
-    addEventListener("load", () => setTimeout(sweep, 60));
-    setTimeout(sweep, 700);
+  function resetCounters(scope){
+    scope.querySelectorAll("[data-count]").forEach(el => { el.dataset.done = ""; el.firstChild.textContent = "0"; });
   }
 
+  const slides = [...document.querySelectorAll(".slide")];
+  const dots = [...document.querySelectorAll("#dots a")];
+  const dotsBox = document.getElementById("dots");
+
+  function setActive(slide){
+    const i = slides.indexOf(slide);
+    dots.forEach((d,j) => d.classList.toggle("active", j === i));
+    dotsBox.classList.toggle("on-light", slide.classList.contains("cta"));
+  }
+
+  if (reduce || !("IntersectionObserver" in window)) {
+    slides.forEach(s => { s.classList.add("live"); runCounters(s); });
+  } else {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+        e.target.classList.add("live"); runCounters(e.target); setActive(e.target);
+      } else if (e.intersectionRatio < 0.5) {
+        e.target.classList.remove("live"); resetCounters(e.target);
+      }
+    }), {threshold:[0, 0.5, 1]});
+    slides.forEach(s => io.observe(s));
+    // make the first slide live immediately (before first scroll)
+    addEventListener("load", () => { const first = slides[0]; first.classList.add("live"); runCounters(first); });
+    setTimeout(() => { if (!document.querySelector(".slide.live")) { const first = slides[0]; first.classList.add("live"); runCounters(first); } }, 300);
+  }
+
+  // hero mockup parallax within its slide
   const stage = document.getElementById("heroStage");
   if (stage && !reduce) {
     let raf = 0;
     addEventListener("scroll", () => {
       if (raf) return;
-      raf = requestAnimationFrame(() => { raf = 0; stage.style.transform = `translateY(${Math.min(window.scrollY,900) * .13}px)`; });
+      raf = requestAnimationFrame(() => { raf = 0; stage.style.transform = `translateY(${Math.min(window.scrollY,700) * .12}px)`; });
     }, {passive:true});
   }
 })();
